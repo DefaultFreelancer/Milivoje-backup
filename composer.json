@@ -1,0 +1,26 @@
+{
+    "name": "milivoje/backups",
+    "description": "Updates for Jacob's platform",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Milivoje",
+            "email": "personal@milivojeivic.info"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "milivoje\\backups\\" : "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "milivoje\\backups\\UpdatesServiceProvider"
+            ]
+        }
+    }
+}
