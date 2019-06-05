@@ -18,7 +18,7 @@ use phpseclib\Net\SSH2;
 use Pterodactyl\Models\Custom\Backup;
 use Prologue\Alerts\AlertsMessageBag;
 
-class MainController extends Controller
+class BackupController extends Controller
 {
     use JavascriptInjection;
 

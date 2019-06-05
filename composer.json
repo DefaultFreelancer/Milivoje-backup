@@ -19,7 +19,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "milivoje\\backups\\UpdatesServiceProvider"
+                "milivoje\\backups\\UpgradeServiceProvider"
             ]
         }
     }
