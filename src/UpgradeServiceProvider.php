@@ -15,10 +15,7 @@ class UpgradeServiceProvider extends ServiceProvider
 
     public function boot()
     {
-
-        dd('asdfasdf');
-
-//        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
 //        $this->loadMigrationsFrom(__DIR__.'/database');
 //        $this->loadViewsFrom(__DIR__ . '/views', 'milivoje');
 //        $this->registerHelpers();
