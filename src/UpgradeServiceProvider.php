@@ -6,7 +6,7 @@
  * Time: 4:37 PM
  */
 
-namespace milivoje\backup;
+namespace milivoje\backups;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -15,8 +15,11 @@ class UpgradeServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
-        $this->loadMigrationsFrom(__DIR__.'/database');
+
+        dd('asdfasdf');
+
+//        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+//        $this->loadMigrationsFrom(__DIR__.'/database');
 //        $this->loadViewsFrom(__DIR__ . '/views', 'milivoje');
 //        $this->registerHelpers();
 //        $this->publishes([

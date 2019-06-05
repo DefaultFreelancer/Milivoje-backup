@@ -6,7 +6,7 @@
  * Time: 4:40 PM
  */
 
-namespace milivoje\backup\http;
+namespace milivoje\backups\http;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
@@ -50,6 +50,12 @@ class BackupController extends Controller
      */
     public function index(Request $request): View
     {
+
+        echo "<pre>";
+        print_r("Radi! ");
+        die;
+
+
         $server = $request->attributes->get('server');
 
         $this->setRequest($request)->injectJavascript([
