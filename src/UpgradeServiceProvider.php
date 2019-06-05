@@ -16,8 +16,8 @@ class UpgradeServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
-//        $this->loadMigrationsFrom(__DIR__.'/database');
-//        $this->loadViewsFrom(__DIR__ . '/views', 'milivoje');
+        $this->loadMigrationsFrom(__DIR__.'/database');
+        $this->loadViewsFrom(__DIR__ . '/views', 'backup');
 //        $this->registerHelpers();
 //        $this->publishes([
 //            __DIR__.'/views' => base_path('resources/views/wisdmlabs/todolist'),
