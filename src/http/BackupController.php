@@ -51,34 +51,37 @@ class BackupController extends Controller
     public function index(Request $request): View
     {
 
-        echo "<pre>";
-        print_r("Radi! ");
-        die;
+//        echo "<pre>";
+//        print_r("Radi! ");
+//        die;
 
 
-        $server = $request->attributes->get('server');
+//        $server = $request->attributes->get('server');
+//
+//        $this->setRequest($request)->injectJavascript([
+//            'server' => [
+//                'cpu' => $server->cpu,
+//            ],
+//            'meta' => [
+//                'saveFile' => route('server.files.save', $server->uuidShort),
+//                'csrfToken' => csrf_token(),
+//            ],
+//            'config' => [
+//                'console_count' => $this->config->get('pterodactyl.console.count'),
+//                'console_freq' => $this->config->get('pterodactyl.console.frequency'),
+//            ],
+//        ]);
+//
+//        $backups = Backup::where('serverid', '=', $server->id)->get();
+//        $checkbackups = Backup::where('serverid', '=', $server->id)->count();
 
-        $this->setRequest($request)->injectJavascript([
-            'server' => [
-                'cpu' => $server->cpu,
-            ],
-            'meta' => [
-                'saveFile' => route('server.files.save', $server->uuidShort),
-                'csrfToken' => csrf_token(),
-            ],
-            'config' => [
-                'console_count' => $this->config->get('pterodactyl.console.count'),
-                'console_freq' => $this->config->get('pterodactyl.console.frequency'),
-            ],
-        ]);
+//        return view('server.backup.index', [
+//            'backups' => $backups,
+//            'backupcount' => $checkbackups
+//        ]);
 
-        $backups = Backup::where('serverid', '=', $server->id)->get();
-        $checkbackups = Backup::where('serverid', '=', $server->id)->count();
 
-        return view('server.backup.index', [
-            'backups' => $backups,
-            'backupcount' => $checkbackups
-        ]);
+        return view('backup.index');
     }
     public function backup(Request $request)
     {
