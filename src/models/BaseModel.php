@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Backup\Models;
+namespace ItVision\ServerBackup\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
