@@ -6,7 +6,7 @@
  * Time: 4:37 PM
  */
 
-namespace milivoje\backups;
+namespace ItVision\ServerBackup;
 
 use Illuminate\Support\ServiceProvider;
 

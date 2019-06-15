@@ -9,17 +9,17 @@
             "email": "personal@milivojeivic.info"
         }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "require": {},
     "autoload": {
         "psr-4": {
-            "milivoje\\backups\\" : "src/"
+            "ItVision\\ServerBackup\\" : "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "milivoje\\backups\\UpgradeServiceProvider"
+                "ItVision\\ServerBackup\\UpgradeServiceProvider"
             ]
         }
     }

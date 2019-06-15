@@ -6,7 +6,7 @@
  * Time: 4:40 PM
  */
 
-namespace milivoje\backups\http;
+namespace Server\Backup\http;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
@@ -51,9 +51,9 @@ class BackupController extends Controller
     public function index(Request $request): View
     {
 
-//        echo "<pre>";
-//        print_r("Radi! ");
-//        die;
+       echo "<pre>";
+       print_r("Test! ");
+       die;
 
 
 //        $server = $request->attributes->get('server');
@@ -81,7 +81,7 @@ class BackupController extends Controller
 //        ]);
 
 
-        return view('backup.index');
+        // return view('backup.index');
     }
     public function backup(Request $request)
     {
