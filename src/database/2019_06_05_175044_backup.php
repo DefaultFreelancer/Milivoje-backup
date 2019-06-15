@@ -6,6 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 
 class Backup extends Migration
 {
+
     /**
      * Run the migrations.
      *
@@ -23,6 +24,7 @@ class Backup extends Migration
         });
     }
 
+
     /**
      * Reverse the migrations.
      *
@@ -32,4 +34,5 @@ class Backup extends Migration
     {
         //
     }
+
 }
