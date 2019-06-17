@@ -7,7 +7,9 @@
  */
 
 
-Route::get('/backup', 'ItVision\ServerBackup\http\BackupController@index')->name('server.backup.index');
-Route::post('/backup','ItVision\ServerBackup\http\BackupController@backup')->name('server.backup.save');
-Route::get('/backup/download/{backup}', 'ItVision\ServerBackup\http\BackupController@download')->name('server.backup.download');
-Route::get('/backup/delete/{backup}', 'ItVision\ServerBackup\http\BackupController@delete')->name('server.backup.delete');
+Route::group(['prefix' => "server/{server}", 'middleware' => ['web','auth']], function (){
+    Route::get('/backup', 'ItVision\ServerBackup\http\BackupController@index');
+    Route::post('/backup','ItVision\ServerBackup\http\BackupController@backup')->name('server.backup.save');
+    Route::get('/backup/download/{backup}', 'ItVision\ServerBackup\http\BackupController@download')->name('server.backup.download');
+    Route::get('/backup/delete/{backup}', 'ItVision\ServerBackup\http\BackupController@delete')->name('server.backup.delete');
+});

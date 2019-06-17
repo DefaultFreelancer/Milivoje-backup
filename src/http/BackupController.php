@@ -11,6 +11,7 @@ namespace ItVision\ServerBackup\http;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Traits\Controllers\JavascriptInjection;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use phpseclib\Crypt\RSA;
@@ -48,31 +49,32 @@ class BackupController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
-    public function index(Request $request): View
+    public function index(Request $request, $server): View
     {
+        $serverReq = $request->attributes->get('server');
 
-        $server = $request->attributes->get('server');
+        if($serverReq)
+            $this->setRequest($request)->injectJavascript([
+                'server' => [
+                    'cpu' => $serverReq->cpu,
+                ],
+                'meta' => [
+                    'saveFile' => route('server.files.save', $serverReq->uuidShort),
+                    'csrfToken' => csrf_token(),
+                ],
+                'config' => [
+                    'console_count' => $this->config->get('pterodactyl.console.count'),
+                    'console_freq' => $this->config->get('pterodactyl.console.frequency'),
+                ],
+            ]);
 
-        $this->setRequest($request)->injectJavascript([
-            'server' => [
-                'cpu' => /* $server->cpu */'',
-            ],
-            'meta' => [
-                'saveFile' => route('server.files.save', 1 /* $server->uuidShort */),
-                'csrfToken' => csrf_token(),
-            ],
-            'config' => [
-                'console_count' => $this->config->get('pterodactyl.console.count'),
-                'console_freq' => $this->config->get('pterodactyl.console.frequency'),
-            ],
-        ]);
-
-        $backups = Backup::where('serverid', '=', $server->id)->get();
-        $checkbackups = Backup::where('serverid', '=', $server->id)->count();
+        $server = Server::where(['uuidShort' => $server])->first();
+        $backups = Backup::where('server_id', '=', $server->id)->get();
 
         return view('backup::index', [
             'backups' => $backups,
-            'backupcount' => $checkbackups
+            'backupcount' => count($backups),
+            'server'    => $server
         ]);
     }
     public function backup(Request $request)
