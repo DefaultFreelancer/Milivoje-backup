@@ -1,5 +1,5 @@
 {
-    "name": "ItVisionPterodactyl/ServerBackup",
+    "name": "it-vision-pterodactyl/server-backup",
     "description": "Backup package for Pterodactyl library",
     "type": "library",
     "license": "MIT",
