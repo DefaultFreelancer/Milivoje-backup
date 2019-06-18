@@ -8,6 +8,7 @@
 
 namespace ItVision\ServerBackup\http;
 
+use Exeption;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Pterodactyl\Http\Controllers\Controller;
@@ -68,8 +69,12 @@ class BackupController extends Controller
                 ],
             ]);
 
-        $server = Server::where(['uuidShort' => $server])->first();
-        $backups = Backup::where('server_id', '=', $server->id)->get();
+        try{
+            $server = Server::where(['uuidShort' => $server])->first();
+            $backups = Backup::where('server_id', '=', $server->id)->get();
+        } catch (\Exception $e){
+            return redirect()->back()->with('Error', 'There is no server!');
+        }
 
         return view('backup::index', [
             'backups' => $backups,
@@ -79,6 +84,12 @@ class BackupController extends Controller
     }
     public function backup(Request $request)
     {
+        echo "<pre>";
+        print_r($request->all());
+        die;
+
+
+
         $server = $request->attributes->get('server');
         $backups = Backup::where('serverid', '=', $server->id)->get();
         $checkbackups = Backup::where('serverid', '=', $server->id)->count();
@@ -122,6 +133,7 @@ Private-MAC: 6c736ecef67cbdb0d6ff01dcfff1b602f77b9fbb
         if (!$ssh->login('root', $key)) {
             exit('Connection Failed');
         }
+
         $ssh->setTimeout(2);
 
         $gamelocation = "/srv/daemon-data/" . $server->uuid;
@@ -141,14 +153,17 @@ Private-MAC: 6c736ecef67cbdb0d6ff01dcfff1b602f77b9fbb
         return redirect()->route('server.backup.index', $server->uuidShort);
 
     }
+
+
     public function download(Request $request, $server, $backupid)
     {
-        $server = $request->attributes->get('server');
-        $backup = Backup::where('id', '=', $backupid)->get();
+        $server = Server::where(['uuidShort' => $server])->first();
+        $backup = Backup::find($backupid);
 
-        return redirect('server/'.$server->uuidShort.'/files/download/backups/'.$backup[0]['name']);
-
+        return redirect('server/'.$server->uuidShort.'/files/download/backups/'.$backup->name);
     }
+
+
     public function delete(Request $request, $server, $backupid)
     {
         $server = $request->attributes->get('server');
