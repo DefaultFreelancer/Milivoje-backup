@@ -1,16 +1,19 @@
 {
-    "name": "milivoje/backup",
-    "description": "Updates for Jacob's platform",
+    "name": "ItVisionPterodactyl/ServerBackup",
+    "description": "Backup package for Pterodactyl library",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
             "name": "Milivoje",
-            "email": "personal@milivojeivic.info"
+            "email": "milivoje@it-version.io"
         }
     ],
-    "minimum-stability": "stable",
-    "require": {},
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.2.*",
+        "laravel/framework": "~5.7.*"
+    },
     "autoload": {
         "psr-4": {
             "ItVision\\ServerBackup\\" : "src/"

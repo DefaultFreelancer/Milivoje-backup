@@ -96,6 +96,7 @@ class BackupController extends Controller
         if($checkbackups == 3){
             return view('server.index');
         };
+
         error_reporting(E_ALL);
         ini_set('max_execution_time', 360);
 
