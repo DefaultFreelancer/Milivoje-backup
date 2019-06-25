@@ -10,24 +10,23 @@ namespace ItVision\ServerBackup;
 
 use Illuminate\Support\ServiceProvider;
 
-class UpgradeServiceProvider extends ServiceProvider
+class BackupServiceProvider extends ServiceProvider
 {
-
     public function boot()
     {
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
         $this->loadMigrationsFrom(__DIR__.'/database');
         $this->loadViewsFrom(__DIR__ . '/views', 'backup');
+
 //        $this->registerHelpers();
 //        $this->publishes([
 //            __DIR__.'/views' => base_path('resources/views/wisdmlabs/todolist'),
 //        ]);
-
-//        $this->app->register(\milivoje\service\UpdatesServiceProvider::class);
-
-//        $this->commands([
-//            \milivoje\service\shellCommands\ShellCommand::class
-//        ]);
+//        if ($this->app->runningInConsole()) {
+//            $this->commands([
+//                InitBackupLimit::class,
+//            ]);
+//        }
 
     }
 

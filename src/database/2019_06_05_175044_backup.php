@@ -17,8 +17,10 @@ class Backup extends Migration
         Schema::create('backups', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+
             $table->integer('server_id')->unsigned();
             $table->foreign('server_id')->references('id')->on('servers');
+
             $table->integer('complete');
             $table->timestamps();
         });

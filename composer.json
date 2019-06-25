@@ -22,7 +22,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "ItVision\\ServerBackup\\UpgradeServiceProvider"
+                "ItVision\\ServerBackup\\BackupServiceProvider"
             ]
         }
     }
