@@ -26,6 +26,7 @@
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">User Servers</h3>
+                    <a href="{{ route('backupLimit.servers.users') }}" class="btn btn-warning pull-right">Back</a>
                 </div>
 
                 <div class="box-body">

@@ -71,16 +71,12 @@ class BackupController extends Controller
                 ],
             ]);
 
-//        try{
+        try{
             $server = Server::where(['uuidShort' => $server])->first();
-            $backups = Backup::where('server_id', '=', $server->id)->get();
-
-            echo "<pre>";
-            print_r($backups);
-            die;
-//        } catch (\Exception $e){
-//            return redirect()->back()->with('Error', 'There is no server!');
-//        }
+            $backups = Backup::where(['server_id' => $server->id])->get();
+        } catch (\Exception $e){
+            return redirect()->back()->with('Error', 'There is no server!');
+        }
 
         return view('backup::index', [
             'backups' => $backups,
@@ -90,20 +86,24 @@ class BackupController extends Controller
     }
 
 
-    public function backup(Request $request)
+    public function backup(Request $request, $server)
     {
-//        $server = $request->attributes->get('server');
-//        $backups = Backup::where(['server_id' => $server->id])->get();
-//        $backupLimit = BackupLimit::where(['server_id' => $server->id])->first();
-//
-//        if(count($backups) >= $backupLimit->backups){
-//            $this->alert->fail('You are not allowed to create more backups!')->flash();
-//            return redirect()->back();
-//        };
-//
-//        error_reporting(E_ALL);
-//        ini_set('max_execution_time', 360);
-//
+        $server = Server::find($server);
+        $backups = Backup::where(['server_id' => $server->id])->get();
+        $backupLimit = BackupLimit::where(['server_id' => $server->id])->first();
+
+        if(count($backups) >= $backupLimit->backups){
+            $this->alert->fail('You are not allowed to create more backups!')->flash();
+            return redirect()->back();
+        };
+
+        echo "<pre>";
+        print_r($server);
+        die;
+
+        error_reporting(E_ALL);
+        ini_set('max_execution_time', 360);
+
 //        $key = new RSA();
 //        $sshKey = ServerSshKeys::find(1);
 //        $key->loadKey($sshKey->key);
@@ -207,10 +207,10 @@ class BackupController extends Controller
         foreach($servers as $server){
             $num = BackupLimit::getBackupLimitNumber($server->id);
             $server->backups = Backup::getBackupNum($server->id);
-            $server->backupLimit = $num->backups ? $num->backups : 0;
+            $server->backupLimit = $num ? $num->backups : 0;
         }
 
-        return view('backup::singleUserServer', ['user' => User::find($user), 'servers' => $servers]);
+        return view('backup::singleUserServer', ['user' => User::find($user), 'servers' => count($servers) ? $servers : [] ]);
     }
 
 

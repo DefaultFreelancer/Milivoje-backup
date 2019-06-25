@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class BackupLimit extends BaseModel
 {
-    protected $table = ['backup_limit'];
+    protected $table = 'backup_limit';
 
     public $server_id;
     public $user_id;
@@ -21,7 +21,7 @@ class BackupLimit extends BaseModel
 
     public static function getBackupLimitNumber($server)
     {
-        return DB::table('backup_limit')->where(['server_id' => $server])->first();
+        return self::where(['server_id' => $server])->first();
     }
 
     public static function create($server){

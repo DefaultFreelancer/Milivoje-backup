@@ -22,7 +22,7 @@
                     <div class="box-header with-border">
                         <h3 class="box-title">Backups - {{$backupcount}}</h3>
                         <div class="box-tools">
-                            <form action="{{ route('server.backup.save', [ $server->uuidShort ]) }}" method="POST">
+                            <form action="{{ route('server.backup.save', [ $server->id ]) }}" method="POST">
                                 @csrf
                                 @method('POST')
                             <button class="btn btn-primary btn-sm" type="submit">Create Backup</button>

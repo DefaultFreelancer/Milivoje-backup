@@ -8,12 +8,11 @@
 
 namespace ItVision\ServerBackup\Models;
 
-
 use Illuminate\Support\Facades\DB;
 
 class Backup extends BaseModel
 {
-    protected $table = ['backups'];
+    protected $table = 'backups';
 //    protected $fillable  = ['server_id','name','complete'];
 //    public $server_id;
 //    public $name;

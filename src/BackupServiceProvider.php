@@ -9,6 +9,7 @@
 namespace ItVision\ServerBackup;
 
 use Illuminate\Support\ServiceProvider;
+use ItVision\ServerBackup\console\InitBackupLimit;
 
 class BackupServiceProvider extends ServiceProvider
 {
@@ -22,11 +23,12 @@ class BackupServiceProvider extends ServiceProvider
 //        $this->publishes([
 //            __DIR__.'/views' => base_path('resources/views/wisdmlabs/todolist'),
 //        ]);
-//        if ($this->app->runningInConsole()) {
-//            $this->commands([
-//                InitBackupLimit::class,
-//            ]);
-//        }
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                InitBackupLimit::class,
+            ]);
+        }
 
     }
 

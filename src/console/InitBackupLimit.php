@@ -6,7 +6,7 @@
  * Time: 10:51 AM
  */
 
-namespace Terminal;
+namespace ItVision\ServerBackup\console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;

@@ -16,7 +16,7 @@ Route::group(['namespace' => 'ItVision\ServerBackup\http', 'prefix' => "server/{
 
 
 Route::group(['namespace' => 'ItVision\ServerBackup\http', 'prefix' => 'admin/', 'middleware' => ['web','auth','admin']], function (){
-    Route::get('backupsLimit/users', 'BackupController@usersView');
+    Route::get('backupsLimit/users', 'BackupController@usersView')->name('backupLimit.servers.users');
     Route::get('backupsLimit/user/{user}', 'BackupController@backupLimit');
     Route::post('backupLimit/change/server/{server}', 'BackupController@backupLimitChange')->name('backupLimit.change');
 });
