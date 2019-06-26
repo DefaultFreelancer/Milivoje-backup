@@ -101,20 +101,20 @@ class BackupController extends Controller
         error_reporting(E_ALL);
         ini_set('max_execution_time', 360);
 
-//        $key = new RSA();
-//        $sshKey = ServerSshKeys::where(['inUse' => 1])->first();
-//        if(!$sshKey){
-//            $sshKey = ServerSshKeys::first();
-//        }
-//        $key->loadKey($sshKey->key);
-//
-//        // Domain can be an IP too
-//        $ssh = new SSH2($server->node->fqdn, 697);
-//        if (!$ssh->login('root', $key)) {
-//            exit('Connection Failed');
-//        }
-//
-//        $ssh->setTimeout(2);
+        $key = new RSA();
+        $sshKey = ServerSshKeys::where(['inUse' => 1])->first();
+        if(!$sshKey){
+            $sshKey = ServerSshKeys::first();
+        }
+        $key->loadKey($sshKey->key);
+
+        // Domain can be an IP too
+        $ssh = new SSH2($server->node->fqdn, 697);
+        if (!$ssh->login('root', $key)) {
+            exit('Connection Failed');
+        }
+
+        $ssh->setTimeout(2);
 
         echo "<pre>";
         print_r($server);
