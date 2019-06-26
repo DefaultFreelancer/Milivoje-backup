@@ -30,11 +30,11 @@
                         @foreach($users as $user)
                         <tr class="align-middle">
                             <td><code>{{ $user->id }}</code></td>
-                            <td><a href="{{ url('admin/backupsLimit/user/'.$user->id) }}">{{ $user->email }}</a></td>
+                            <td><a href="{{ (count($user->servers) ? url('admin/backupsLimit/user/'.$user->id) : "#") }}">{{ $user->email }}</a></td>
                             <td>{{ $user->name_first }}, {{ $user->name_last }}</td>
                             <td>{{ $user->username }}</td>
                             <td class="text-center">
-                                <a href="{{ url('admin/backupsLimit/user/'.$user->id) }}">{{ count($user->servers) }}</a>
+                                <a href="{{ (count($user->servers) ? url('admin/backupsLimit/user/'.$user->id) : "#") }}">{{ count($user->servers) }}</a>
                             </td>
                         </tr>
                         @endforeach

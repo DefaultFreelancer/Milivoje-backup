@@ -14,6 +14,7 @@ use Illuminate\View\View;
 use Illuminate\Http\Request;
 use ItVision\ServerBackup\Models\Backup;
 use ItVision\ServerBackup\Models\BackupLimit;
+use ItVision\ServerBackup\models\ServerSshKeys;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
@@ -97,15 +98,14 @@ class BackupController extends Controller
             return redirect()->back();
         };
 
-        echo "<pre>";
-        print_r($server);
-        die;
-
         error_reporting(E_ALL);
         ini_set('max_execution_time', 360);
 
 //        $key = new RSA();
-//        $sshKey = ServerSshKeys::find(1);
+//        $sshKey = ServerSshKeys::where(['inUse' => 1])->first();
+//        if(!$sshKey){
+//            $sshKey = ServerSshKeys::first();
+//        }
 //        $key->loadKey($sshKey->key);
 //
 //        // Domain can be an IP too
@@ -115,7 +115,12 @@ class BackupController extends Controller
 //        }
 //
 //        $ssh->setTimeout(2);
-//
+
+        echo "<pre>";
+        print_r($server);
+        die;
+
+
 //        $gamelocation = "/srv/daemon-data/" . $server->uuid;
 //        $backupslocation = "/srv/daemon-data/" . $server->uuid . "/backups";
 //
