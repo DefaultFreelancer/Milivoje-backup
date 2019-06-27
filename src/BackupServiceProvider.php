@@ -10,6 +10,8 @@ namespace ItVision\ServerBackup;
 
 use Illuminate\Support\ServiceProvider;
 use ItVision\ServerBackup\console\InitBackupLimit;
+use phpseclib\Crypt\RSA;
+use phpseclib\Net\SSH2;
 
 class BackupServiceProvider extends ServiceProvider
 {

@@ -15,13 +15,13 @@ use Illuminate\Http\Request;
 use ItVision\ServerBackup\Models\Backup;
 use ItVision\ServerBackup\Models\BackupLimit;
 use ItVision\ServerBackup\models\ServerSshKeys;
+use phpseclib\Crypt\RSA;
+use phpseclib\Net\SSH2;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
 use Pterodactyl\Traits\Controllers\JavascriptInjection;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use phpseclib\Crypt\RSA;
-use phpseclib\Net\SSH2;
 use Prologue\Alerts\AlertsMessageBag;
 
 class BackupController extends Controller
@@ -99,7 +99,8 @@ class BackupController extends Controller
         };
 
         error_reporting(E_ALL);
-        ini_set('max_execution_time', 360);
+        ini_set('max_execution_time', 1560);
+
 
         $key = new RSA();
         $sshKey = ServerSshKeys::where(['inUse' => 1])->first();
@@ -114,7 +115,7 @@ class BackupController extends Controller
             exit('Connection Failed');
         }
 
-        $ssh->setTimeout(2);
+        $ssh->setTimeout(3);
 
         echo "<pre>";
         print_r($server);
