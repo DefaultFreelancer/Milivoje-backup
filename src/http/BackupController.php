@@ -109,10 +109,41 @@ class BackupController extends Controller
         if(!$sshKey){
             $sshKey = ServerSshKeys::first();
         }
-        $key->loadKey($sshKey->key);
-//
+        $key->loadKey('PuTTY-User-Key-File-2: ssh-rsa
+Encryption: none
+Comment: root
+Public-Lines: 6
+AAAAB3NzaC1yc2EAAAABJQAAAQEArHNdkaZK/TmXb+6m3V2Np7VYp+38s/DfdX7m
+TnttfgbkygznWZnN1YQaHfoTq8o1bTCqiQaH2BmtgNha24MIU5iRUaIUNUaHhSr6
+UBZt/QK11ySVg9Uz20l384gc0pPQeIVurqnGTyXD+1PriZiJirt48Be4a/iqSjkD
+c8DyIA/FZe9PlPQ50HgX1U4v8EmROYkrSrFK7czhAQdAu0WFilaXajPYpgARevxp
+fQUvuLE1ILC0ea6Ad4DPQGW+XIW+H9pZ1e9XPyEZuyjKXp6Co+E8qMZaV42faIHq
+ieqv0RMoZ7/vLbBPnhKv0sB1XcwDaL50WFTX2Qd9SBhrS37/nw==
+Private-Lines: 14
+AAABACVJYFbX2NzOLpS9+pC6SCRC4ryGe9PhDbiKI/VLHpfKI6FO5encENQ4PP+Q
+BEDRxlzMQIxUcGYTY8jU1V/k+uGkcnKD6LGStYSTq75KCfGEC6QjlfL9qljtSl4r
+RICOqZ2Eok9HTXjlkiiA2Psn5mMvdBg8eubpqEdmRe+DqfkXzoZ0B+aRzW+JpIRV
+g6VsUcuH/8V5GtMoksA7oU8UqJOUVzOR/4FytEUGpFDcvTPWsqR6qPS1BgYxA4Uw
+bUhHQl0x2yDDGWs2LfYqILspjfYhuL5FXgDMQEG6ra09bh0d95vU1tepvQiTQHvM
+O4bhqyCJsBuhGkqcgjQ6fQC7oa0AAACBAPi5Es4g7o4UbexhQUcVGR+fyLnc7okq
+9kVhWd6aOgmjcWa38Tc9vyBoY0vP1QlTKZunJgeu9U7YJlbfoRxks2aJ2EisjxVm
+dZLv5STX9yYm5pFvC2+WlQE0rmaov47Hx99EhFIVuo9qJZs2yLVkx+2I7RBbsvbW
+UB8UycoGif2/AAAAgQCxfwPc6aNVmC2SkAFn/ht3TGtyfHKlsjr05pmYE0vwPFcd
+Y79jsY5vU1pltzM7VcafQNNfXvP1wrfIGMSoiYjEpvt7sdnsSNDyOMDOJQcr6p60
+yboX/Uf1A9Qgn+8DwqCv8oM7coS17EQKX2csqTBeaVSVfNjHaaOEAcAfIZE2IQAA
+AIB8KBlFzL5eVctAzCiHvroZwFtn2bWh5KVgQbpAbEya85tVuVWrVUy15w7pY6tv
+SzzDJFj3lr3zmj/bBPkE166cTqNmUdg7Pv7aVtxok2CHM1P3E6FRzpccbyX+DIKi
+5kXEZAaXvlTWNH5H4T4zP31yv31lkmTUmOQCh6YRZ5JV4g==
+Private-MAC: 470500fba51e3d08bbc32ed0d2a2ba140231b3cd
+');
+
         // Domain can be an IP too
         $ssh = new SSH2($server->node->fqdn, 697);
+
+        echo "<pre>";
+        print_r($server->node->fqdn);
+        print_r(!$ssh->login('root', $key));
+        die;
         if (!$ssh->login('root', $key)) {
             exit('Connection Failed');
         }
