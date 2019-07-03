@@ -10,9 +10,7 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {
-        "phpseclib/phpseclib": "~2.0"
-    },
+    "require": {},
     "autoload": {
         "psr-4": {
             "ItVision\\ServerBackup\\" : "src/"

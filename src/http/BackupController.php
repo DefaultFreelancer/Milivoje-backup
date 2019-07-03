@@ -102,13 +102,15 @@ class BackupController extends Controller
         ini_set('max_execution_time', 1560);
 
 
+        // SSH connection
+
         $key = new RSA();
         $sshKey = ServerSshKeys::where(['inUse' => 1])->first();
         if(!$sshKey){
             $sshKey = ServerSshKeys::first();
         }
         $key->loadKey($sshKey->key);
-
+//
         // Domain can be an IP too
         $ssh = new SSH2($server->node->fqdn, 697);
         if (!$ssh->login('root', $key)) {
@@ -117,26 +119,30 @@ class BackupController extends Controller
 
         $ssh->setTimeout(3);
 
-        echo "<pre>";
-        print_r($server);
-        die;
+        $gamelocation = "/srv/daemon-data/" . $server->uuid;
+        if($server->egg_id == 40)
+                $gamelocation = "/srv/daemon-data/" . $server->uuid ."/garrysmod/addons /srv/daemon-data/" .
+                    $server->uuid ."/garrysmod/data /srv/daemon-data/" . $server->uuid ."/garrysmod/gamemodes /srv/daemon-data/" .
+                    $server->uuid ."/garrysmod/lua /srv/daemon-data/" . $server->uuid ."/garrysmod/maps /srv/daemon-data/" .
+                    $server->uuid ."/garrysmod/materials /srv/daemon-data/" . $server->uuid ."/garrysmod/models /srv/daemon-data/" .
+                    $server->uuid ."/garrysmod/scripts /srv/daemon-data/" . $server->uuid ."/garrysmod/sounds /srv/daemon-data/" .
+                    $server->uuid ."/garrysmod/sv.db";
+
+        $backupslocation = "/srv/daemon-data/" . $server->uuid . "/backups";
 
 
-//        $gamelocation = "/srv/daemon-data/" . $server->uuid;
-//        $backupslocation = "/srv/daemon-data/" . $server->uuid . "/backups";
-//
-//        $random = rand();
-//        $backup = new Backup();
-//        $backup->name = $random . '.tar.gz';
-//        $backup->server_id = $server->id;
-//        $backup->complete = 0;
-//
-//        $ssh->exec('mkdir -p '.$backupslocation);
-//        $ssh->exec('cd '.$backupslocation.' && nohup tar -czvf '.$backup->name.' '.$gamelocation);
-//
-//        $backup->save();
-//        $this->alert->success('Your server is being backed up. Please check back later.')->flash();
-//        return redirect()->route('server.backup.index', $server->uuidShort);
+        $random = rand();
+        $backup = new Backup;
+        $backup->name = $random . '.tar.gz';
+        $backup->serverid = $server->id;
+        $backup->complete = 1;
+
+        $ssh->exec('mkdir -p '.$backupslocation);
+        $ssh->exec('cd '.$backupslocation.' && nohup tar -czvf '.$backup->name.' '.$gamelocation);
+
+        $backup->save();
+        $this->alert->success('Your server is being backed up. Please check back later.')->flash();
+        return redirect()->route('server.backup.index', $server->uuidShort);
     }
 
 
