@@ -148,10 +148,8 @@ class BackupController extends Controller
 
     public function download(Request $request, $server, $backupid)
     {
-        $server = $request->attributes->get('server');
         $backup = Backup::find($backupid);
-
-        return redirect('server/'.$server->uuidShort.'/files/download/backups/'.$backup->name);
+        return redirect('server/'.$server.'/files/download/backups/'.$backup->name);
     }
 
 
