@@ -15,18 +15,6 @@
 @endsection
 
 @section('content')
-
-{{--    <pre>--}}
-
-    <?php
-
-//
-//    print_r($server);
-//    print_r($node);
-//    die;
-
-
-    ?>
     <div class="content">
         <div class="row">
             <div class="col">

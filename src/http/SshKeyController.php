@@ -88,8 +88,8 @@ class SshKeyController extends Controller
         $key_->save();
 
         $this->alert->success('Key '.$key_->name.' is now in use')->flash();
-        return redirect()->back();
 
+        return redirect()->back();
     }
 
 
