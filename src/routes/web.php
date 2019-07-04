@@ -8,7 +8,7 @@
 
 Route::group(['middleware' => ['web', 'csrf', 'auth', 'server', 'subuser.auth', 'node.maintenance']], function (){
     Route::group(['namespace' => 'ItVision\ServerBackup\http', 'prefix' => "server/{server}"], function (){
-        Route::get('/backup', 'BackupController@index');
+        Route::get('/backup', 'BackupController@index')->name('server.backups.client');
         Route::post('/backup','BackupController@backup')->name('server.backup.save');
         Route::get('/backup/download/{backup}', 'BackupController@download')->name('server.backup.download');
         Route::get('/backup/delete/{backupId}', 'BackupController@delete')->name('server.backup.delete');
