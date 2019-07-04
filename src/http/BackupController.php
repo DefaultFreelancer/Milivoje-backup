@@ -36,6 +36,7 @@ class BackupController extends Controller
      * @var \Prologue\Alerts\AlertsMessageBag
      */
     protected $alert;
+    protected $sshKey;
     /**
      * ConsoleController constructor.
      *
@@ -45,6 +46,12 @@ class BackupController extends Controller
     {
         $this->config = $config;
         $this->alert = $alert;
+
+        $sshKey = ServerSshKeys::where(['inUse' => 1])->first();
+        if(!$sshKey)
+            $sshKey = ServerSshKeys::first();
+
+        $this->sshKey = $sshKey->key;
     }
 
     /**
@@ -92,7 +99,7 @@ class BackupController extends Controller
         $backupLimit = BackupLimit::where(['server_id' => $server->id])->first();
 
         if(count($backups) >= $backupLimit->backups){
-            $this->alert->fail('You are not allowed to create more backups!')->flash();
+            $this->alert->error('You are not allowed to create more backups!')->flash();
             return redirect()->back();
         };
 
@@ -101,18 +108,17 @@ class BackupController extends Controller
 
         // SSH connection
         $key = new RSA();
-        $sshKey = ServerSshKeys::where(['inUse' => 1])->first();
-        if(!$sshKey)
-            $sshKey = ServerSshKeys::first();
 
-        $key->loadKey($sshKey->key);
+        $key->loadKey($this->sshKey);
         $ssh = new SSH2($server->node->fqdn, 697);
 
-        if(!$ssh->login('root', $key)) {
-            print_r($ssh->getErrors());
-            exit('Connection Failed');
-        }
-        $ssh->setTimeout(30);
+//        if(!$ssh->login('root', $key)) {
+//            print_r($ssh->getErrors());
+//            exit('Connection Failed');
+//        }
+        $ssh->login('root', $key);
+        sleep(5);
+        $ssh->setTimeout(3);
 
         $gamelocation = "/srv/daemon-data/" . $server->uuid;
         if($server->egg_id == 40)
@@ -128,7 +134,7 @@ class BackupController extends Controller
         $random = rand();
         $backup = new Backup;
         $backup->name = $random . '.tar.gz';
-        $backup->serverid = $server->id;
+        $backup->server_id = $server->id;
         $backup->complete = 1;
 
         $ssh->exec('mkdir -p '.$backupslocation);
@@ -136,7 +142,7 @@ class BackupController extends Controller
 
         $backup->save();
         $this->alert->success('Your server is being backed up. Please check back later.')->flash();
-        return redirect()->route('server.backup.index', $server->uuidShort);
+        return redirect()->back();
     }
 
 
@@ -149,54 +155,29 @@ class BackupController extends Controller
     }
 
 
-    public function delete(Request $request, $server, $backupid)
+    public function delete(Request $request,$server, $backupId)
     {
-//        $server = $request->attributes->get('server');
-//        $backup = Backup::where('id', '=', $backupid)->get();
-//        Backup::where('id', '=', $backupid)->delete();
-//
-//        error_reporting(E_ALL);
-//        ini_set('max_execution_time', 360);
-//        $key = new RSA();
-//        $key->loadKey('PuTTY-User-Key-File-2: ssh-rsa
-//Encryption: none
-//Comment: root@vps591074
-//Public-Lines: 6
-//AAAAB3NzaC1yc2EAAAADAQABAAABAQC7mYDW5XjngjUfc0OFU2gCJzxpLEkDxOVi
-//doh/ktoDiYIwRe04V4sH5vd9k7ZWzbnH8RU4c1Gd3oDGfcvjP+2yy0uO2nmiTja+
-//3BMArZcJh3dqV8oNRCVj1/cISmWDYBXYeAp68lks0hQNUYdCaQjLtKctYhR84JJB
-//IbE+OqkzJuxPiyeDmXezcb6EbR1EypHOjMWoEyG2qwNUt83wmJXYk2rUi7Gm7r5D
-//mr5zYemNRZzIc1bp8jaWTTgrzrFRwWeIC7Hpe/EpVnWp/osGGPHVCQLx6PR3Sv82
-//7F7AKQ75kIZWUWAf9lKGf5QMloFWlSGm2Ydski0RNVRGhQ8NoKR9
-//Private-Lines: 14
-//AAABAQC6Y4do+9GmYu4Y81KQsw/Ro94XuNJKlmQ58f8okWVewk7BW5iXtBMEpOwc
-//rpgponkFOHiW/6yFp75WeEIM5UVrsSS/KD5VjlRCSTHwKIi6BQgWdmbfy2dCzh44
-//9IHrh5ns20e+Y+9J4ufdW7WBvA3rJvA63QnyEMX/RFRvuaTGlh6oisOzh4PuoHW3
-//FtqIoGUkmH5iIcomG+GXzOJk4tz24nU9uNIRomtpxgnbngpcNhrep0Im0vx5zNXR
-//PL4Sz9BG8Xzq4lpTbP4x5Zf76Y86459wVY4L2kTo0V7blfcxFMu+VN1X6nHv777H
-//xGmpaujO/poHganQVIa+bmsbuESBAAAAgQDtpr3A/KirGJI86QmHxb0LIZPBr5BP
-//AGr2WMy0biTnXkTSm+fr6n/5wJTq+FJhTGtipeKsc4D83BhMUj7D3q5rcB2F+OF4
-//yOxgWtz3fikE5CkilSNgqA1EMX7CK1bs2p8TbHei10AV0GOjeanswt9Ce45xiCSz
-//GMYi0eqS0sHrTQAAAIEAyhV5HVgCN9uHsoR3OkEqlM1EnZ0oDs9rguynddDXpWmd
-//qG0sTwRGtW33qoHc2LlAOzOQj3vjEBTE5ZEh+OJej5ZOu0B428J2Y/nrUjbCkQbp
-//WabAiR41ltayTCE+ynVj9tw6rWfBn6DJG0/c1zO1C5SZQ73mRcZmX9gdXG5QJfEA
-//AACBAMt9DRbbOwvtKl57vQKiQAmWz0qd8m8yFvnWOdC7RenVz59bwQu3ApxO/gdB
-///9f9/dOvAv3GO0E2qDdLPKhPFrYohYiT5azGwxfpBdl/n8uS7uFmA3OrnyJ7lgFy
-//jiO6j+An9FzTqjEuvKztQz4ZGCJ+b1u9MGvNFc4sapiAj5Xc
-//Private-MAC: 6c736ecef67cbdb0d6ff01dcfff1b602f77b9fbb
-//');
-//
-//        // Domain can be an IP too
-//        $ssh = new SSH2($server->node->fqdn, 697);
+        $server = $request->attributes->get('server');
+        $backup = Backup::find($backupId);
+
+        error_reporting(E_ALL);
+        ini_set('max_execution_time', 1560);
+
+        $key = new RSA();
+        $key->loadKey($this->sshKey);
+
+        // Domain can be an IP too
+        $ssh = new SSH2($server->node->fqdn, 697);
 //        if (!$ssh->login('root', $key)) {
 //            exit('Connection Failed');
 //        }
-//        $backuplocation = "/srv/daemon-data/" . $server->uuid . "/backups/".$backup[0]['name'];
-//
-//        $ssh->exec('rm -rf '.$backuplocation);
-//        Backup::where('id', '=', $backupid)->delete();
-//
-//        return redirect()->route('server.backup.index', $server->uuidShort);
+        $ssh->login('root', $key);
+        $backuplocation = "/srv/daemon-data/" . $server->uuid . "/backups/".$backup->name;
+
+        $ssh->exec('rm -rf '.$backuplocation);
+        $backup->delete();
+
+        return redirect()->back();
     }
 
 

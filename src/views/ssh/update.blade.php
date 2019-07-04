@@ -18,7 +18,7 @@
 
             <div class="col-sm-5">
 
-                <div class="box box-primary">back
+                <div class="box box-primary">
                     <div class="box-header with-border">
                         <h3 class="box-title">Update key</h3>
                     </div>
