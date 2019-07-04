@@ -56,8 +56,9 @@ class BackupController extends Controller
     public function index(Request $request, $server): View
     {
         $serverReq = $request->attributes->get('server');
+//        $serverReq = Server::where(['uuidShort' => $server])->first();
 
-        if($serverReq)
+//        if($serverReq)
             $this->setRequest($request)->injectJavascript([
                 'server' => [
                     'cpu' => $serverReq->cpu,
