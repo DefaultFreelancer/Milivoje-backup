@@ -46,27 +46,32 @@
                                         {{ $key->name }}
                                     </td>
                                     <td class="middle text-center">
-                                        {{ $key->custom_echo($key->key, 80)}}
+                                        {{ $key->custom_echo($key->key, 60)}}
                                     </td>
-                                    <td>
+                                    <td style="display: flex;">
+                                        <div style="margin: 3px;"><a href="{{ url('admin/updateKey/'.$key->id) }}" class="btn btn-facebook"><span class="fa fa-edit"></span></a></div>
 
-                                        <div class="form-group">
-                                            <a href="{{ url('admin/updateKey/'.$key->id) }}" class="btn btn-facebook">Update</a>
-                                        </div>
-
-                                        <form id="inUse" method="POST" action="{{ route('ssh.inuse.key', $key->id) }}">
+                                        <form id="inUse" method="POST" style="margin: 3px;" action="{{ route('ssh.inuse.key', $key->id) }}">
                                             {{ csrf_field() }}
-                                            <div class="form-group">
-                                                <input type="submit" class="btn btn-{{ $key->inUse ? "default" : "success" }}" value="{{ $key->inUse ? "In Use" : "Use" }}">
+                                            <div>
+                                                <button type="submit" class="btn btn-{{ $key->inUse ? "default" : "success" }}">
+                                                @if($key->inUse)
+                                                    <span class="fa fa-minus-circle"></span>
+                                                @else
+                                                    <span class='fa fa-plus-circle'></span>
+                                                @endif
+                                                </button>
                                             </div>
                                         </form>
 
-                                        <form id="delete-form" method="POST" action="{{ route('ssh.delete.key', $key->id) }}">
+                                        <form id="delete-form" style="margin: 3px;" method="POST" action="{{ route('ssh.delete.key', $key->id) }}">
                                             {{ csrf_field() }}
                                             {{ method_field('DELETE') }}
 
-                                            <div class="form-group">
-                                                <input type="submit" class="btn btn-danger" value="Delete key">
+                                            <div>
+                                                <button class="btn btn-danger" type="submit">
+                                                    <span class="fa fa-trash"></span>
+                                                </button>
                                             </div>
                                         </form>
 
