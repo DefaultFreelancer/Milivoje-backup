@@ -146,7 +146,7 @@ class BackupController extends Controller
     }
 
 
-    public function download(Request $request, $backupid)
+    public function download(Request $request, $server, $backupid)
     {
         $server = $request->attributes->get('server');
         $backup = Backup::find($backupid);
