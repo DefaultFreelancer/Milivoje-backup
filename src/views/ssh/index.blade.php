@@ -46,7 +46,7 @@
                                         {{ $key->name }}
                                     </td>
                                     <td class="middle text-center">
-                                        {{ $key->custom_echo($key->key, 100) }}
+                                        {{ $key->custom_echo($key->key, 80)}}
                                     </td>
                                     <td>
 

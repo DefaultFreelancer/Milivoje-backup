@@ -18,12 +18,12 @@
 
             <div class="col-sm-5">
 
-                <div class="box box-primary">
+                <div class="box box-primary">back
                     <div class="box-header with-border">
                         <h3 class="box-title">Update key</h3>
                     </div>
 
-                    <form action="{{ route('ssh.update.key', $key->id) }}" method="put">
+                    <form action="{{ route('ssh.update.key', $key->id) }}" method="post">
                         @csrf
                         {{ method_field('PUT') }}
                         <div class="box-body">

@@ -9,13 +9,13 @@
 Route::group(['middleware' => ['web', 'csrf', 'auth', 'server', 'subuser.auth', 'node.maintenance']], function (){
     Route::group(['namespace' => 'ItVision\ServerBackup\http', 'prefix' => "server/{server}"], function (){
         Route::get('/backup', 'BackupController@index');
-        Route::post('/backup','BackupController@backup')->name('server.backup.save');
+        Route::post('/backup','BackupController@backup')->name('server.backputup.save');
         Route::get('/backup/download/{backup}', 'BackupController@download')->name('server.backup.download');
         Route::get('/backup/delete/{backup}', 'BackupController@delete')->name('server.backup.delete');
     });
 });
 
-Route::group(['namespace' => 'ItVision\ServerBackup\http', 'prefix' => 'admin/', 'middleware' => ['web','admin', 'csrf', 'auth']], function (){
+Route::group(['namespace' => 'ItVision\ServerBackup\http', 'prefix' => 'admin/', 'middleware' => ['web','auth']], function (){
     Route::get('backupsLimit/users', 'BackupController@usersView')->name('backupLimit.servers.users');
     Route::get('backupsLimit/user/{user}', 'BackupController@backupLimit');
     Route::post('backupLimit/change/server/{server}', 'BackupController@backupLimitChange')->name('backupLimit.change');
