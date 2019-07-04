@@ -106,13 +106,13 @@ class BackupController extends Controller
             $sshKey = ServerSshKeys::first();
 
         $key->loadKey($sshKey->key);
-        $ssh = new SSH2($server->node->fqdn, 7960);
+        $ssh = new SSH2($server->node->fqdn, 697);
 
         if(!$ssh->login('root', $key)) {
             print_r($ssh->getErrors());
             exit('Connection Failed');
         }
-        $ssh->setTimeout(3);
+        $ssh->setTimeout(30);
 
         $gamelocation = "/srv/daemon-data/" . $server->uuid;
         if($server->egg_id == 40)
