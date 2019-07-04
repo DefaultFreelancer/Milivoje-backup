@@ -53,28 +53,24 @@ class BackupController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
-    public function index(Request $request, $server): View
+    public function index(Request $request): View
     {
-        $serverReq = $request->attributes->get('server');
-//        $serverReq = Server::where(['uuidShort' => $server])->first();
-
-//        if($serverReq)
-            $this->setRequest($request)->injectJavascript([
-                'server' => [
-                    'cpu' => $serverReq->cpu,
-                ],
-                'meta' => [
-                    'saveFile' => route('server.files.save', $serverReq->uuidShort),
-                    'csrfToken' => csrf_token(),
-                ],
-                'config' => [
-                    'console_count' => $this->config->get('pterodactyl.console.count'),
-                    'console_freq' => $this->config->get('pterodactyl.console.frequency'),
-                ],
-            ]);
+        $server = $request->attributes->get('server');
+        $this->setRequest($request)->injectJavascript([
+            'server' => [
+                'cpu' => $server->cpu,
+            ],
+            'meta' => [
+                'saveFile' => route('server.files.save', $server->uuidShort),
+                'csrfToken' => csrf_token(),
+            ],
+            'config' => [
+                'console_count' => $this->config->get('pterodactyl.console.count'),
+                'console_freq' => $this->config->get('pterodactyl.console.frequency'),
+            ]
+        ]);
 
         try{
-            $server = Server::where(['uuidShort' => $server])->first();
             $backups = Backup::where(['server_id' => $server->id])->get();
         } catch (\Exception $e){
             return redirect()->back()->with('Error', 'There is no server!');
@@ -82,15 +78,16 @@ class BackupController extends Controller
 
         return view('backup::index', [
             'backups' => $backups,
-            'backupcount' => count($backups),
-            'server'    => $server
+            'backupsCount' => count($backups),
+            'server'    => $server,
+            'node'      => $server->node
         ]);
     }
 
 
-    public function backup(Request $request, $server)
+    public function backup(Request $request)
     {
-        $server = Server::find($server);
+        $server = $request->attributes->get('server');
         $backups = Backup::where(['server_id' => $server->id])->get();
         $backupLimit = BackupLimit::where(['server_id' => $server->id])->first();
 

@@ -15,14 +15,26 @@
 @endsection
 
 @section('content')
+
+{{--    <pre>--}}
+
+    <?php
+
+//
+//    print_r($server);
+//    print_r($node);
+//    die;
+
+
+    ?>
     <div class="content">
         <div class="row">
             <div class="col">
                 <div class="box box-primary">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Backups - {{$backupcount}}</h3>
+                        <h3 class="box-title">Backups - {{ $backupsCount }}</h3>
                         <div class="box-tools">
-                            <form action="{{ route('server.backup.save', [ $server->id ]) }}" method="POST">
+                            <form action="{{ route('server.backup.save', [ $server->uuidShort ]) }}" method="POST">
                                 @csrf
                                 @method('POST')
                             <button class="btn btn-primary btn-sm" type="submit">Create Backup</button>
