@@ -61,7 +61,7 @@ class SshKeyController extends Controller
         $model->save();
 
         $this->alert->success('You updated ssh key!')->flash();
-        return redirect()->url('admin/sshKeys');
+        return redirect('admin/sshKeys');
     }
 
 
