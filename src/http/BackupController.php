@@ -112,11 +112,11 @@ class BackupController extends Controller
         $key->loadKey($this->sshKey);
         $ssh = new SSH2($server->node->fqdn, 697);
 
-//        if(!$ssh->login('root', $key)) {
-//            print_r($ssh->getErrors());
-//            exit('Connection Failed');
-//        }
-        $ssh->login('root', $key);
+        if(!$ssh->login('root', $key)) {
+            print_r($ssh->getErrors());
+            exit('Connection Failed');
+        }
+
         sleep(5);
         $ssh->setTimeout(3);
 
