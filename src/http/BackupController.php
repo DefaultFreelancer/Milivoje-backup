@@ -135,8 +135,8 @@ class BackupController extends Controller
 
         $ssh->exec('mkdir -p '.$backupslocation);
         $ssh->exec('cd '.$backupslocation.' && nohup tar -czvf '.$backup->name.' ' .$gamelocation);
-
         $backup->save();
+
         $this->alert->success('Your server is being backed up. Please check back later.')->flash();
         return redirect()->back();
     }
@@ -168,6 +168,7 @@ class BackupController extends Controller
         $ssh->exec('rm -rf '.$backuplocation);
         $backup->delete();
 
+        $this->alert->success('Backup deleted!')->flash();
         return redirect()->back();
     }
 

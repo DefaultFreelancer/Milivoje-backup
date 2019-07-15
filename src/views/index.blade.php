@@ -90,7 +90,7 @@
                 $('#create-backup-alert').fadeIn();
                 setTimeout(function () {
                     $('#create-backup-alert').fadeOut();
-                }, 5000);
+                }, 8000);
             },1500);
         });
     </script>
