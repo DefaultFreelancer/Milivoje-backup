@@ -100,6 +100,15 @@ class BackupController extends Controller
             return redirect()->back();
         };
 
+        if(count($backups) >= 1) {
+            $lastBackup = Backup::where(['server_id' => $server->id])->orderBy('created_at', 'desc')->first();
+            $now = strtotime("-10 minutes");
+            if ($now < strtotime($lastBackup->created_at)) {
+                $this->alert->success('You have created a backup less than 10 minutes ago.')->flash();
+                return redirect()->back();
+            }
+        }
+
         error_reporting(E_ALL);
         ini_set('max_execution_time', 1560);
 
