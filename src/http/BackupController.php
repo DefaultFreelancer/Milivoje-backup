@@ -46,12 +46,14 @@ class BackupController extends Controller
     {
         $this->config = $config;
         $this->alert = $alert;
+        $this->sshKey = [];
 
         $sshKey = ServerSshKeys::where(['inUse' => 1])->first();
         if(!$sshKey)
             $sshKey = ServerSshKeys::first();
 
-        $this->sshKey = $sshKey->key;
+        if($sshKey)
+            $this->sshKey = $sshKey->key;
     }
 
     /**
