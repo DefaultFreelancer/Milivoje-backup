@@ -8,7 +8,6 @@
 
 namespace ItVision\ServerBackup\http;
 
-use Exeption;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
@@ -29,18 +28,16 @@ class BackupController extends Controller
     use JavascriptInjection;
 
     /**
-     * @var \Illuminate\Contracts\Config\Repository
+     * @var ConfigRepository
      */
     protected $config;
-    /**
-     * @var \Prologue\Alerts\AlertsMessageBag
-     */
     protected $alert;
     protected $sshKey;
+
     /**
-     * ConsoleController constructor.
-     *
-     * @param \Illuminate\Contracts\Config\Repository $config
+     * BackupController constructor.
+     * @param ConfigRepository $config
+     * @param AlertsMessageBag $alert
      */
     public function __construct(ConfigRepository $config, AlertsMessageBag $alert)
     {
@@ -101,24 +98,32 @@ class BackupController extends Controller
         $backupLimit = BackupLimit::where(['server_id' => $server->id])->first();
 
         if(count($backups) >= $backupLimit->backups){
-            $this->alert->error('You are not allowed to create more backups!')->flash();
+            $this->alert->success('You are not allowed to create more backups!')->flash();
             return redirect()->back();
         };
+
+        if(count($backups) >= 1) {
+            $lastBackup = Backup::where(['server_id' => $server->id])->orderBy('created_at', 'desc')->first();
+            $now = strtotime("-10 minutes");
+            if ($now < strtotime($lastBackup->created_at)) {
+                $this->alert->success('You have created a backup less than 10 minutes ago.')->flash();
+                return redirect()->back();
+            }
+        }
 
         error_reporting(E_ALL);
         ini_set('max_execution_time', 1560);
 
         // SSH connection
         $key = new RSA();
-
         $key->loadKey($this->sshKey);
         $ssh = new SSH2($server->node->fqdn, 697);
 
-//        if(!$ssh->login('root', $key)) {
-//            print_r($ssh->getErrors());
-//            exit('Connection Failed');
-//        }
-        $ssh->login('root', $key);
+        if(!$ssh->login('root', $key)) {
+            print_r($ssh->getErrors());
+            exit('Connection Failed');
+        }
+
         sleep(5);
         $ssh->setTimeout(3);
 
@@ -140,9 +145,9 @@ class BackupController extends Controller
         $backup->complete = 1;
 
         $ssh->exec('mkdir -p '.$backupslocation);
-        $ssh->exec('cd '.$backupslocation.' && nohup tar -czvf '.$backup->name.' '.$gamelocation);
-
+        $ssh->exec('cd '.$backupslocation.' && nohup tar -czvf '.$backup->name.' ' .$gamelocation);
         $backup->save();
+
         $this->alert->success('Your server is being backed up. Please check back later.')->flash();
         return redirect()->back();
     }
@@ -168,15 +173,13 @@ class BackupController extends Controller
 
         // Domain can be an IP too
         $ssh = new SSH2($server->node->fqdn, 697);
-//        if (!$ssh->login('root', $key)) {
-//            exit('Connection Failed');
-//        }
         $ssh->login('root', $key);
         $backuplocation = "/srv/daemon-data/" . $server->uuid . "/backups/".$backup->name;
 
         $ssh->exec('rm -rf '.$backuplocation);
         $backup->delete();
 
+        $this->alert->success('Backup deleted!')->flash();
         return redirect()->back();
     }
 

@@ -16,6 +16,13 @@
 
 @section('content')
     <div class="content">
+        <div class="row" id="create-backup-alert" style="display: none;">
+            <div class="col-xs-12">
+                <div class="alert alert-success alert-dismissable" role="alert">
+                    Backup process started!
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col">
                 <div class="box box-primary">
@@ -25,7 +32,7 @@
                             <form action="{{ route('server.backup.save', [ $server->uuidShort ]) }}" method="POST">
                                 @csrf
                                 @method('POST')
-                            <button class="btn btn-primary btn-sm" type="submit">Create Backup</button>
+                            <button class="btn btn-primary btn-sm" type="submit" id="create-backup-button">Create Backup</button>
                             </form>
                         </div>
                     </div>
@@ -76,4 +83,16 @@
     {!! Theme::js('vendor/chartjs/chart.min.js') !!}
     {!! Theme::js('vendor/jquery/jquery.min.js') !!}
     {!! Theme::js('vendor/sweetalert/sweetalert.min.js') !!}
+
+    <script type="application/javascript">
+        $('#create-backup-button').on('click', function () {
+            setTimeout(function () {
+                $('#create-backup-alert').fadeIn();
+                setTimeout(function () {
+                    $('#create-backup-alert').fadeOut();
+                }, 8000);
+            },1500);
+        });
+    </script>
+
 @endsection
