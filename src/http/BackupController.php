@@ -48,7 +48,7 @@ class BackupController extends Controller
         if(!$sshKey)
             $sshKey = ServerSshKeys::first();
 
-        $this->sshKey = $sshKey->key;
+        $this->sshKey = $sshKey ? $sshKey->key : "  ";
     }
 
     /**
