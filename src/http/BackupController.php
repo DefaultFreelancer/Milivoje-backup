@@ -43,12 +43,14 @@ class BackupController extends Controller
     {
         $this->config = $config;
         $this->alert = $alert;
+        $this->sshKey = [];
 
         $sshKey = ServerSshKeys::where(['inUse' => 1])->first();
-        if(!$sshKey)
+        if (!$sshKey)
             $sshKey = ServerSshKeys::first();
 
-        $this->sshKey = $sshKey ? $sshKey->key : "  ";
+        if ($sshKey)
+            $this->sshKey = $sshKey->key;
     }
 
     /**
@@ -74,17 +76,17 @@ class BackupController extends Controller
             ]
         ]);
 
-        try{
+        try {
             $backups = Backup::where(['server_id' => $server->id])->get();
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             return redirect()->back()->with('Error', 'There is no server!');
         }
 
         return view('backup::index', [
             'backups' => $backups,
             'backupsCount' => count($backups),
-            'server'    => $server,
-            'node'      => $server->node
+            'server' => $server,
+            'node' => $server->node
         ]);
     }
 
@@ -95,12 +97,12 @@ class BackupController extends Controller
         $backups = Backup::where(['server_id' => $server->id])->get();
         $backupLimit = BackupLimit::where(['server_id' => $server->id])->first();
 
-        if(count($backups) >= $backupLimit->backups){
+        if (count($backups) >= $backupLimit->backups) {
             $this->alert->success('You are not allowed to create more backups!')->flash();
             return redirect()->back();
         };
 
-        if(count($backups) >= 1) {
+        if (count($backups) >= 1) {
             $lastBackup = Backup::where(['server_id' => $server->id])->orderBy('created_at', 'desc')->first();
             $now = strtotime("-10 minutes");
             if ($now < strtotime($lastBackup->created_at)) {
@@ -117,7 +119,7 @@ class BackupController extends Controller
         $key->loadKey($this->sshKey);
         $ssh = new SSH2($server->node->fqdn, 697);
 
-        if(!$ssh->login('root', $key)) {
+        if (!$ssh->login('root', $key)) {
             print_r($ssh->getErrors());
             exit('Connection Failed');
         }
@@ -126,13 +128,13 @@ class BackupController extends Controller
         $ssh->setTimeout(3);
 
         $gamelocation = "/srv/daemon-data/" . $server->uuid;
-        if($server->egg_id == 40)
-            $gamelocation = "/srv/daemon-data/" . $server->uuid ."/garrysmod/addons /srv/daemon-data/" .
-                $server->uuid ."/garrysmod/data /srv/daemon-data/" . $server->uuid ."/garrysmod/gamemodes /srv/daemon-data/" .
-                $server->uuid ."/garrysmod/lua /srv/daemon-data/" . $server->uuid ."/garrysmod/maps /srv/daemon-data/" .
-                $server->uuid ."/garrysmod/materials /srv/daemon-data/" . $server->uuid ."/garrysmod/models /srv/daemon-data/" .
-                $server->uuid ."/garrysmod/scripts /srv/daemon-data/" . $server->uuid ."/garrysmod/sounds /srv/daemon-data/" .
-                $server->uuid ."/garrysmod/sv.db";
+        if ($server->egg_id == 40)
+            $gamelocation = "/srv/daemon-data/" . $server->uuid . "/garrysmod/addons /srv/daemon-data/" .
+                $server->uuid . "/garrysmod/data /srv/daemon-data/" . $server->uuid . "/garrysmod/gamemodes /srv/daemon-data/" .
+                $server->uuid . "/garrysmod/lua /srv/daemon-data/" . $server->uuid . "/garrysmod/maps /srv/daemon-data/" .
+                $server->uuid . "/garrysmod/materials /srv/daemon-data/" . $server->uuid . "/garrysmod/models /srv/daemon-data/" .
+                $server->uuid . "/garrysmod/scripts /srv/daemon-data/" . $server->uuid . "/garrysmod/sounds /srv/daemon-data/" .
+                $server->uuid . "/garrysmod/sv.db";
 
         $backupslocation = "/srv/daemon-data/" . $server->uuid . "/backups";
 
@@ -142,8 +144,8 @@ class BackupController extends Controller
         $backup->server_id = $server->id;
         $backup->complete = 1;
 
-        $ssh->exec('mkdir -p '.$backupslocation);
-        $ssh->exec('cd '.$backupslocation.' && nohup tar -czvf '.$backup->name.' ' .$gamelocation);
+        $ssh->exec('mkdir -p ' . $backupslocation);
+        $ssh->exec('cd ' . $backupslocation . ' && nohup tar -czvf ' . $backup->name . ' ' . $gamelocation);
         $backup->save();
 
         $this->alert->success('Your server is being backed up. Please check back later.')->flash();
@@ -154,11 +156,11 @@ class BackupController extends Controller
     public function download(Request $request, $server, $backupid)
     {
         $backup = Backup::find($backupid);
-        return redirect('server/'.$server.'/files/download/backups/'.$backup->name);
+        return redirect('server/' . $server . '/files/download/backups/' . $backup->name);
     }
 
 
-    public function delete(Request $request,$server, $backupId)
+    public function delete(Request $request, $server, $backupId)
     {
         $server = $request->attributes->get('server');
         $backup = Backup::find($backupId);
@@ -172,9 +174,9 @@ class BackupController extends Controller
         // Domain can be an IP too
         $ssh = new SSH2($server->node->fqdn, 697);
         $ssh->login('root', $key);
-        $backuplocation = "/srv/daemon-data/" . $server->uuid . "/backups/".$backup->name;
+        $backuplocation = "/srv/daemon-data/" . $server->uuid . "/backups/" . $backup->name;
 
-        $ssh->exec('rm -rf '.$backuplocation);
+        $ssh->exec('rm -rf ' . $backuplocation);
         $backup->delete();
 
         $this->alert->success('Backup deleted!')->flash();
@@ -192,24 +194,20 @@ class BackupController extends Controller
     public function backupLimit($user): View
     {
         $servers = Server::where(['owner_id' => $user])->get();
-        foreach($servers as $server){
+        foreach ($servers as $server) {
             $num = BackupLimit::getBackupLimitNumber($server->id);
             $server->backups = Backup::getBackupNum($server->id);
             $server->backupLimit = $num ? $num->backups : 0;
         }
 
-        return view('backup::singleUserServer', ['user' => User::find($user), 'servers' => count($servers) ? $servers : [] ]);
+        return view('backup::singleUserServer', ['user' => User::find($user), 'servers' => count($servers) ? $servers : []]);
     }
 
 
     public function backupLimitChange(Request $request, $server)
     {
-        $this->validate($request,['limit' => 'numeric|between:0,20']);
+        $this->validate($request, ['limit' => 'numeric|between:0,20']);
         DB::table('backup_limit')->where(['server_id' => $server])->update(['backups' => $request['limit']]);
-        return redirect()->back()->with('success','Backup Limit updated!');
+        return redirect()->back()->with('success', 'Backup Limit updated!');
     }
-
-
-
-
 }
